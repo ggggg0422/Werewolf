@@ -29,11 +29,12 @@
     h1 {
         font-size: 26px;
         margin-bottom: 25px;
-        color: #e94560;
+        color: #f1c40f; 
         letter-spacing: 2px;
     }
     .controls {
-        margin-bottom: 25px;
+        margin: 0 auto 25px auto; 
+        width: 220px; 
         background-color: #0f3460;
         padding: 15px 20px;
         border-radius: 8px;
@@ -70,7 +71,11 @@
         border-radius: 8px;
         cursor: pointer;
         transition: background-color 0.3s, transform 0.1s;
-        width: 100%;
+        
+        display: block; 
+        margin: 0 auto; 
+        width: 220px; 
+        
         letter-spacing: 1px;
     }
     button:hover {
@@ -102,19 +107,20 @@
     
     /* 針對卡牌圖片的樣式設定 */
     .role-card {
-        width: 140px;          /* 固定寬度 */
-        height: 190px;         /* 固定高度 */
-        object-fit: cover;     /* 確保圖片不變形 */
-        border-radius: 10px;   /* 圓角 */
+        width: 140px;          
+        height: 190px;         
+        object-fit: cover;     
+        border-radius: 10px;   
         box-shadow: 0 4px 10px rgba(0,0,0,0.6);
         margin: 15px 0;
-        border: 2px solid transparent;
+        border: 3px solid transparent; 
         transition: all 0.2s;
     }
     
-    /* 最終結果顯示金色邊框 */
+    /* 最終結果顯示黑色邊框 */
     .final-card {
-        border-color: #f1c40f;
+        border-color: #000000;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.8); 
     }
     
     /* 動畫過程中的圖片設定為半透明，營造洗牌跳動感 */
@@ -183,17 +189,17 @@
                 const rand2 = pool2[Math.floor(Math.random() * pool2.length)];
                 
                 displayElement.innerHTML = `
-                    <div style="color: #e0e0e0; font-size: 18px;">百變狼王</div>
+                    <div style="color: #ff0000; font-size: 18px;">百變狼王</div>
                     <img src="${roleImages[rand1]}" class="role-card animating-card" alt="${rand1}">
                     
-                    <div style="color: #e0e0e0; font-size: 18px; margin-top: 10px;">假面狼王</div>
+                    <div style="color: #ff0000; font-size: 18px; margin-top: 10px;">假面狼王</div>
                     <img src="${roleImages[rand2]}" class="role-card animating-card" alt="${rand2}">
                 `;
             } else {
                 const rand = basePool[Math.floor(Math.random() * basePool.length)];
                 
                 displayElement.innerHTML = `
-                    <div style="color: #e0e0e0; font-size: 18px;">百變狼王</div>
+                    <div style="color: #ff0000; font-size: 18px;">百變狼王</div>
                     <img src="${roleImages[rand]}" class="role-card animating-card" alt="${rand}">
                 `;
             }
@@ -217,11 +223,11 @@
             }
             
             displayElement.innerHTML = `
-                <div style="color: #f1c40f; font-size: 20px;">百變狼王</div>
+                <div style="color: #ff0000; font-size: 20px;">百變狼王</div>
                 <div class="role-name">${pool[0]}</div>
                 <img src="${roleImages[pool[0]]}" class="role-card final-card" alt="${pool[0]}">
                 
-                <div style="color: #f1c40f; font-size: 20px; margin-top: 15px;">假面狼王</div>
+                <div style="color: #ff0000; font-size: 20px; margin-top: 15px;">假面狼王</div>
                 <div class="role-name">${pool[1]}</div>
                 <img src="${roleImages[pool[1]]}" class="role-card final-card" alt="${pool[1]}">
             `;
@@ -230,7 +236,7 @@
             let resultRole = basePool[index];
             
             displayElement.innerHTML = `
-                <div style="color: #f1c40f; font-size: 20px;">百變狼王</div>
+                <div style="color: #ff0000; font-size: 20px;">百變狼王</div>
                 <div class="role-name">${resultRole}</div>
                 <img src="${roleImages[resultRole]}" class="role-card final-card" alt="${resultRole}">
             `;

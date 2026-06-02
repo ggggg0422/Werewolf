@@ -34,8 +34,11 @@
     .controls {
         margin-bottom: 25px;
         background-color: #0f3460;
-        padding: 15px;
+        padding: 15px 20px;
         border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
     }
     label {
         font-size: 18px;
@@ -45,11 +48,16 @@
         justify-content: center;
         gap: 12px;
         color: #fff;
+        transition: color 0.2s;
     }
-    input[type="checkbox"] {
+    label:hover {
+        color: #f1c40f;
+    }
+    input[type="radio"] {
         width: 20px;
         height: 20px;
         cursor: pointer;
+        accent-color: #e94560;
     }
     button {
         background-color: #e94560;
@@ -70,9 +78,14 @@
     button:active {
         transform: scale(0.98);
     }
+    button:disabled {
+        background-color: #555;
+        cursor: not-allowed;
+        transform: none;
+    }
     .result-box {
         margin-top: 30px;
-        min-height: 100px;
+        min-height: 120px;
         background-color: #1a1a2e;
         border: 2px dashed #e94560;
         border-radius: 8px;
@@ -84,7 +97,10 @@
         font-weight: bold;
         padding: 20px;
         line-height: 1.6;
-        color: #f1c40f;
+    }
+    /* 動畫過程中的文字設定為半透明，營造跳動感 */
+    .animating-text {
+        opacity: 0.5;
     }
 </style>
 </head>
@@ -95,54 +111,98 @@
     
     <div class="controls">
         <label>
-            <input type="checkbox" id="magicianToggle">
+            <input type="radio" name="version" id="version1" checked>
+            百變狼王1.0
+        </label>
+        <label>
+            <input type="radio" name="version" id="version2">
             百變狼王2.0
         </label>
     </div>
     
-    <button onclick="drawRoles()">開始抽取</button>
+    <button id="drawBtn" onclick="startDraw()">開始抽取</button>
 
     <div class="result-box" id="resultDisplay">
-        <span style="color: #666;">等待狼王抽籤...</span>
+        <span style="color: #666;">到底誰會變狼王呢</span>
     </div>
 </div>
 
 <script>
-    function drawRoles() {
-        const includeMagician = document.getElementById('magicianToggle').checked;
-        const basePool = ["預言家", "女巫", "獵人", "攝夢人", "熊"];
-        const displayElement = document.getElementById('resultDisplay');
-        
-        displayElement.innerHTML = "<span style='color: #a9a9a9;'>狼王正在選擇技能中...</span>";
+    // 更新各神牌的專屬顏色
+    const roleColors = {
+        "預言家": "#8e44ad", // 深紫色
+        "女巫": "#ff5252",   // 紅色
+        "獵人": "#f1c40f",   // 原本的黃色
+        "攝夢人": "#7b68ee", // 藍紫色
+        "熊": "#cd853f",     // 咖啡色
+        "魔術師": "#1976d2"  // 深藍色
+    };
 
-        setTimeout(() => {
-            if (includeMagician) {
-                let pool = [...basePool, "魔術師"];
-                
-                for (let i = pool.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [pool[i], pool[j]] = [pool[j], pool[i]];
-                }
-                
-                const firstSkill = pool[0];
-                const secondSkill = pool[1];
+    function startDraw() {
+        const isVersion2 = document.getElementById('version2').checked;
+        const basePool = ["預言家", "女巫", "獵人", "攝夢人", "熊"];
+        const pool2 = [...basePool, "魔術師"];
+        const displayElement = document.getElementById('resultDisplay');
+        const drawBtn = document.getElementById('drawBtn');
+        
+        drawBtn.disabled = true;
+        
+        let frames = 0;
+        const maxFrames = 20; 
+        const speed = 60; 
+        
+        const intervalId = setInterval(() => {
+            if (isVersion2) {
+                const rand1 = pool2[Math.floor(Math.random() * pool2.length)];
+                const rand2 = pool2[Math.floor(Math.random() * pool2.length)];
                 
                 displayElement.innerHTML = `
                     <div style="color: #e0e0e0; font-size: 18px;">百變狼王</div>
-                    <div style="font-size: 28px; margin-bottom: 10px;">【${firstSkill}】</div>
+                    <div class="animating-text" style="font-size: 28px; margin-bottom: 10px; color: ${roleColors[rand1]};">${rand1}</div>
                     <div style="color: #e0e0e0; font-size: 18px;">假面狼王</div>
-                    <div style="font-size: 28px;">【${secondSkill}】</div>
+                    <div class="animating-text" style="font-size: 28px; color: ${roleColors[rand2]};">${rand2}</div>
                 `;
             } else {
-                let index = Math.floor(Math.random() * basePool.length);
-                const skill = basePool[index];
+                const rand = basePool[Math.floor(Math.random() * basePool.length)];
                 
                 displayElement.innerHTML = `
                     <div style="color: #e0e0e0; font-size: 18px;">百變狼王</div>
-                    <div style="font-size: 32px; margin-top: 10px;">【${skill}】</div>
+                    <div class="animating-text" style="font-size: 32px; margin-top: 10px; color: ${roleColors[rand]};">${rand}</div>
                 `;
             }
-        }, 600);
+            
+            frames++;
+            
+            if (frames >= maxFrames) {
+                clearInterval(intervalId);
+                showFinalResult(isVersion2, basePool, pool2, displayElement);
+                drawBtn.disabled = false; 
+            }
+        }, speed);
+    }
+
+    function showFinalResult(isVersion2, basePool, pool2, displayElement) {
+        if (isVersion2) {
+            let pool = [...pool2];
+            for (let i = pool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pool[i], pool[j]] = [pool[j], pool[i]];
+            }
+            
+            displayElement.innerHTML = `
+                <div style="color: #e0e0e0; font-size: 18px;">百變狼王</div>
+                <div style="font-size: 28px; margin-bottom: 10px; color: ${roleColors[pool[0]]};">${pool[0]}</div>
+                <div style="color: #e0e0e0; font-size: 18px;">假面狼王</div>
+                <div style="font-size: 28px; color: ${roleColors[pool[1]]};">${pool[1]}</div>
+            `;
+        } else {
+            let index = Math.floor(Math.random() * basePool.length);
+            
+            displayElement.innerHTML = `
+                <div style="color: #e0e0e0; font-size: 18px;">百變狼王</div>
+                <div style="font-size: 32px; margin-top: 10px; color: ${roleColors[basePool[index]]};">${basePool[index]}</div>
+            `;
+        }
     }
 </script>
 

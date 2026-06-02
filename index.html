@@ -12,8 +12,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        min-height: 100vh;
         margin: 0;
+        padding: 20px 0;
     }
     .container {
         background-color: #16213e;
@@ -98,9 +99,34 @@
         padding: 20px;
         line-height: 1.6;
     }
-    /* 動畫過程中的文字設定為半透明，營造跳動感 */
-    .animating-text {
+    
+    /* 針對卡牌圖片的樣式設定 */
+    .role-card {
+        width: 140px;          /* 固定寬度 */
+        height: 190px;         /* 固定高度 */
+        object-fit: cover;     /* 確保圖片不變形 */
+        border-radius: 10px;   /* 圓角 */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+        margin: 15px 0;
+        border: 2px solid transparent;
+        transition: all 0.2s;
+    }
+    
+    /* 最終結果顯示金色邊框 */
+    .final-card {
+        border-color: #f1c40f;
+    }
+    
+    /* 動畫過程中的圖片設定為半透明，營造洗牌跳動感 */
+    .animating-card {
         opacity: 0.5;
+        filter: grayscale(30%);
+    }
+
+    .role-name {
+        font-size: 16px;
+        color: #e0e0e0;
+        margin-bottom: 5px;
     }
 </style>
 </head>
@@ -128,14 +154,14 @@
 </div>
 
 <script>
-    // 更新各神牌的專屬顏色
-    const roleColors = {
-        "預言家": "#8e44ad", // 深紫色
-        "女巫": "#ff5252",   // 紅色
-        "獵人": "#f1c40f",   // 原本的黃色
-        "攝夢人": "#7b68ee", // 藍紫色
-        "熊": "#cd853f",     // 咖啡色
-        "魔術師": "#1976d2"  // 深藍色
+    // 建立神牌與圖片網址的對應表
+    const roleImages = {
+        "預言家": "https://i.postimg.cc/D0B9BXHx/guang-ming-yu-yan-jia.webp",
+        "女巫": "https://i.postimg.cc/CxGxsvmY/guang-ming-nu-wu.webp",
+        "獵人": "https://i.postimg.cc/SKVQwJBT/lie-ren.jpg",
+        "攝夢人": "https://i.postimg.cc/DwrwPCBZ/she-meng-ren.webp",
+        "熊": "https://i.postimg.cc/pLfLJ0ks/xun-xiong-shi.webp",
+        "魔術師": "https://i.postimg.cc/mD5LgK2c/mo-shu-shi.png"
     };
 
     function startDraw() {
@@ -158,16 +184,17 @@
                 
                 displayElement.innerHTML = `
                     <div style="color: #e0e0e0; font-size: 18px;">百變狼王</div>
-                    <div class="animating-text" style="font-size: 28px; margin-bottom: 10px; color: ${roleColors[rand1]};">${rand1}</div>
-                    <div style="color: #e0e0e0; font-size: 18px;">假面狼王</div>
-                    <div class="animating-text" style="font-size: 28px; color: ${roleColors[rand2]};">${rand2}</div>
+                    <img src="${roleImages[rand1]}" class="role-card animating-card" alt="${rand1}">
+                    
+                    <div style="color: #e0e0e0; font-size: 18px; margin-top: 10px;">假面狼王</div>
+                    <img src="${roleImages[rand2]}" class="role-card animating-card" alt="${rand2}">
                 `;
             } else {
                 const rand = basePool[Math.floor(Math.random() * basePool.length)];
                 
                 displayElement.innerHTML = `
                     <div style="color: #e0e0e0; font-size: 18px;">百變狼王</div>
-                    <div class="animating-text" style="font-size: 32px; margin-top: 10px; color: ${roleColors[rand]};">${rand}</div>
+                    <img src="${roleImages[rand]}" class="role-card animating-card" alt="${rand}">
                 `;
             }
             
@@ -190,17 +217,22 @@
             }
             
             displayElement.innerHTML = `
-                <div style="color: #e0e0e0; font-size: 18px;">百變狼王</div>
-                <div style="font-size: 28px; margin-bottom: 10px; color: ${roleColors[pool[0]]};">${pool[0]}</div>
-                <div style="color: #e0e0e0; font-size: 18px;">假面狼王</div>
-                <div style="font-size: 28px; color: ${roleColors[pool[1]]};">${pool[1]}</div>
+                <div style="color: #f1c40f; font-size: 20px;">百變狼王</div>
+                <div class="role-name">${pool[0]}</div>
+                <img src="${roleImages[pool[0]]}" class="role-card final-card" alt="${pool[0]}">
+                
+                <div style="color: #f1c40f; font-size: 20px; margin-top: 15px;">假面狼王</div>
+                <div class="role-name">${pool[1]}</div>
+                <img src="${roleImages[pool[1]]}" class="role-card final-card" alt="${pool[1]}">
             `;
         } else {
             let index = Math.floor(Math.random() * basePool.length);
+            let resultRole = basePool[index];
             
             displayElement.innerHTML = `
-                <div style="color: #e0e0e0; font-size: 18px;">百變狼王</div>
-                <div style="font-size: 32px; margin-top: 10px; color: ${roleColors[basePool[index]]};">${basePool[index]}</div>
+                <div style="color: #f1c40f; font-size: 20px;">百變狼王</div>
+                <div class="role-name">${resultRole}</div>
+                <img src="${roleImages[resultRole]}" class="role-card final-card" alt="${resultRole}">
             `;
         }
     }
